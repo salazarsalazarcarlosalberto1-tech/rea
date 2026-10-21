@@ -69,6 +69,15 @@ describe("rea environment-serve --replay-only", () => {
         expect(tools.map(({ name }) => name).sort()).toEqual(
           source.manifest.tools.map(({ name }) => name).sort(),
         );
+        const users = tools.find(({ name }) => name === "get_users_by_id");
+        expect(users?.description).toContain(
+          '; returns a JSON object with fields "id", "uid", "login", "email"; recorded statuses 200;',
+        );
+        expect(users?.annotations).toEqual({
+          readOnlyHint: true,
+          idempotentHint: true,
+          openWorldHint: false,
+        });
         const exact = await client.callTool({
           name: "get_users_by_id",
           arguments: { id: "2" },
